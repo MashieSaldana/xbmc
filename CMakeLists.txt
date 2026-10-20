@@ -311,6 +311,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
                                             -DAPP_SCMID=${APP_SCMID}
+                                            -DAPP_PACKAGE=${APP_PACKAGE}
                                             -DAPP_COPYRIGHT_YEARS=${APP_COPYRIGHT_YEARS}
                                             -DAPP_BUILD_DATE=${APP_BUILD_DATE}
                                             -DAPP_SHARED_LIBRARY_SUFFIX="${APP_SHARED_LIBRARY_SUFFIX}"

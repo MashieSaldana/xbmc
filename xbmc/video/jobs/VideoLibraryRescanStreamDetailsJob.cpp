@@ -50,6 +50,8 @@ bool CVideoLibraryRescanStreamDetailsJob::Work(CVideoDatabase& db)
   SetTitle(g_localizeStrings.Get(39202));
   SetProgress(0, static_cast<int>(files.size()));
 
+  CLog::Log(LOGINFO, "Rescan stream details: {} library files", files.size());
+
   int done = 0;
   int updated = 0;
   int failed = 0;
@@ -73,7 +75,18 @@ bool CVideoLibraryRescanStreamDetailsJob::Work(CVideoDatabase& db)
       ++failed;
     }
 
-    SetProgress(++done, static_cast<int>(files.size()));
+    ++done;
+    if (done % 100 == 0)
+      CLog::Log(LOGINFO, "Rescan stream details: {}/{}", done, files.size());
+    SetProgress(done, static_cast<int>(files.size()));
+
+    // Keep transactions short so other Kodi clients using the same MySQL
+    // library are not blocked for the whole scan.
+    if (done % 200 == 0)
+    {
+      db.CommitTransaction();
+      db.BeginTransaction();
+    }
   }
   db.CommitTransaction();
 
