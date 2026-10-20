@@ -265,7 +265,10 @@ void CDVDDemuxFFmpeg::ProbeTrueHdAtmos()
 {
   if (!m_pFormatContext || !m_pFormatContext->pb ||
       !(m_pFormatContext->pb->seekable & AVIO_SEEKABLE_NORMAL))
+  {
+    CLog::Log(LOGDEBUG, "ProbeTrueHdAtmos: skipped (no seekable input)");
     return;
+  }
 
   std::vector<bool> checked(m_pFormatContext->nb_streams, false);
   const auto needsProbe = [this, &checked]()
@@ -288,12 +291,16 @@ void CDVDDemuxFFmpeg::ProbeTrueHdAtmos()
     return;
 
   bool readAny = false;
-  for (int i = 0; i < 64 && needsProbe(); ++i)
+  int packetsRead = 0;
+  int64_t bytesRead = 0;
+  for (int i = 0; i < 1024 && needsProbe() && bytesRead < 256 * 1024 * 1024; ++i)
   {
     if (av_read_frame(m_pFormatContext, pkt) < 0)
       break;
 
     readAny = true;
+    ++packetsRead;
+    bytesRead += pkt->size;
     AVCodecParameters* par = m_pFormatContext->streams[pkt->stream_index]->codecpar;
     if (par->codec_id == AV_CODEC_ID_TRUEHD && !checked[pkt->stream_index])
     {
@@ -304,13 +311,15 @@ void CDVDDemuxFFmpeg::ProbeTrueHdAtmos()
         if (result == 1)
         {
           par->profile = FF_PROFILE_TRUEHD_ATMOS;
-          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::ProbeTrueHdAtmos - detected Atmos in stream {}",
-                    pkt->stream_index);
+          CLog::Log(LOGDEBUG, "ProbeTrueHdAtmos: detected Atmos in stream {} after {} packets",
+                    pkt->stream_index, packetsRead);
         }
       }
     }
     av_packet_unref(pkt);
   }
+  CLog::Log(LOGDEBUG, "ProbeTrueHdAtmos: {} read {} packets {} bytes", m_pInput->GetFileName(),
+            packetsRead, bytesRead);
 
   av_packet_free(&pkt);
 
