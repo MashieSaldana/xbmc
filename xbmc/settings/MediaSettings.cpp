@@ -347,6 +347,14 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
         HELPERS::ShowOKDialogText(CVariant{700}, CVariant{703});
     }
   }
+  else if (settingId == CSettings::SETTING_VIDEOLIBRARY_RESCANSTREAMDETAILS)
+  {
+    if (HELPERS::ShowYesNoDialogText(CVariant{39202}, CVariant{39203}) == DialogResponse::CHOICE_YES)
+    {
+      if (!CVideoLibraryQueue::GetInstance().RescanStreamDetailsModal())
+        HELPERS::ShowOKDialogText(CVariant{700}, CVariant{703});
+    }
+  }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
     CBuiltins::GetInstance().Execute("exportlibrary(video)");
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)

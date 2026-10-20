@@ -77,6 +77,23 @@ public:
   bool CleanLibraryModal(const std::set<int>& paths = std::set<int>());
 
   /*!
+   \brief Enqueue a stream-details-only rescan of the whole video library.
+
+   Re-reads video and audio stream details from the media files without
+   running any scraper or touching artwork/text metadata.
+
+   \return True if the job was enqueued, false if another library job is running
+   */
+  bool RescanStreamDetails();
+
+  /*!
+   \brief Run the stream-details-only rescan with a modal progress dialog.
+
+   \return True if the rescan ran, false if another library job is running
+   */
+  bool RescanStreamDetailsModal();
+
+  /*!
    \brief Enqueues a job to refresh the details of the given item.
 
    \param[inout] item Video item to be refreshed

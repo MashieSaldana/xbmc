@@ -82,6 +82,7 @@ public:
   static constexpr auto SETTING_VIDEOLIBRARY_UPDATEONSTARTUP = "videolibrary.updateonstartup";
   static constexpr auto SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE = "videolibrary.backgroundupdate";
   static constexpr auto SETTING_VIDEOLIBRARY_CLEANUP = "videolibrary.cleanup";
+  static constexpr auto SETTING_VIDEOLIBRARY_RESCANSTREAMDETAILS = "videolibrary.rescanstreamdetails";
   static constexpr auto SETTING_VIDEOLIBRARY_EXPORT = "videolibrary.export";
   static constexpr auto SETTING_VIDEOLIBRARY_IMPORT = "videolibrary.import";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS = "videolibrary.showemptytvshows";

@@ -19,6 +19,18 @@ public:
   static int GetCodecPriority(const std::string& codec);
 
   /*!
+   * \brief Get the codec name Kodi stores for a stream.
+   *
+   * Uses the FFmpeg profile to distinguish immersive variants from their
+   * base codec, e.g. truehd_atmos from truehd and dtshd_ma_x from dtshd_ma.
+   *
+   * \param codecId The FFmpeg codec id
+   * \param profile The FFmpeg profile
+   * \return The codec name
+   */
+  static std::string GetCodecName(int codecId, int profile);
+
+  /*!
    * \brief Make a FourCC code as unsigned integer value
    * \param c1 The first FourCC char
    * \param c2 The second FourCC char

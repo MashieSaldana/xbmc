@@ -912,6 +912,10 @@
           <level>2</level>
           <control type="button" format="action" />
         </setting>
+        <setting id="videolibrary.rescanstreamdetails" type="action" label="39202" help="39203">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="videolibrary.export" type="action" label="14248" help="36149">
           <level>2</level>
           <control type="button" format="action" />

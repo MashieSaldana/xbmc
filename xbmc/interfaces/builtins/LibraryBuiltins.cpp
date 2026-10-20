@@ -108,6 +108,20 @@ static int CleanLibrary(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Rescan video stream details without scraping metadata.
+ */
+static int RescanStreamDetails(const std::vector<std::string>& params)
+{
+  (void)params;
+
+  if (!CVideoLibraryQueue::GetInstance().RescanStreamDetails())
+  {
+    CLog::Log(LOGERROR, "RescanStreamDetails is not possible while scanning or cleaning");
+    return -1;
+  }
+  return 0;
+}
+
 /*! \brief Export a library.
  *  \param params The parameters.
  *  \details params[0] = "video" or "music".
@@ -408,6 +422,7 @@ CBuiltins::CommandMap CLibraryBuiltins::GetOperations() const
 {
   return {
           {"cleanlibrary",        {"Clean the video/music library", 1, CleanLibrary}},
+          {"rescanstreamdetails", {"Rescan video stream details from the media files", 0, RescanStreamDetails}},
           {"exportlibrary",       {"Export the video/music library", 1, ExportLibrary}},
           {"exportlibrary2",      {"Export the video/music library", 1, ExportLibrary2}},
           {"updatelibrary",       {"Update the selected library (music or video)", 1, UpdateLibrary}},

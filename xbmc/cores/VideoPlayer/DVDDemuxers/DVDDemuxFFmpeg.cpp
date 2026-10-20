@@ -31,6 +31,7 @@
 #include "utils/FontUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/StreamUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -103,6 +104,33 @@ bool AttachmentIsFont(const AVDictionaryEntry* dict)
            font_mimetypes.end();
   }
   return false;
+}
+
+/*!
+ * \brief Check a TrueHD packet for the 16-channel presentation flag.
+ *
+ * FFmpeg only sets FF_PROFILE_TRUEHD_ATMOS from the decoder, and its default
+ * stream probe can stop before the first major sync that carries the flag.
+ * The flag lives at a fixed offset in the 28-byte major sync header:
+ * substream_info bit 7 with four substreams.
+ *
+ * \return -1 if no major sync was found, 0 for a non-Atmos sync, 1 for Atmos
+ */
+int CheckTrueHdAtmosPacket(const uint8_t* data, int size)
+{
+  if (!data || size < 18)
+    return -1;
+
+  int maxOffset = size - 18;
+  if (maxOffset > 64)
+    maxOffset = 64;
+
+  for (int i = 0; i <= maxOffset; ++i)
+  {
+    if (data[i] == 0xF8 && data[i + 1] == 0x72 && data[i + 2] == 0x6F && data[i + 3] == 0xBA)
+      return ((data[i + 16] >> 4) == 4 && (data[i + 17] & 0x80) != 0) ? 1 : 0;
+  }
+  return -1;
 }
 } // namespace
 
@@ -231,6 +259,67 @@ bool CDVDDemuxFFmpeg::Aborted()
     return true;
 
   return false;
+}
+
+void CDVDDemuxFFmpeg::ProbeTrueHdAtmos()
+{
+  if (!m_pFormatContext || !m_pFormatContext->pb ||
+      !(m_pFormatContext->pb->seekable & AVIO_SEEKABLE_NORMAL))
+    return;
+
+  std::vector<bool> checked(m_pFormatContext->nb_streams, false);
+  const auto needsProbe = [this, &checked]()
+  {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; ++i)
+    {
+      const AVCodecParameters* par = m_pFormatContext->streams[i]->codecpar;
+      if (par->codec_id == AV_CODEC_ID_TRUEHD && par->profile != FF_PROFILE_TRUEHD_ATMOS &&
+          !checked[i])
+        return true;
+    }
+    return false;
+  };
+
+  if (!needsProbe())
+    return;
+
+  AVPacket* pkt = av_packet_alloc();
+  if (!pkt)
+    return;
+
+  bool readAny = false;
+  for (int i = 0; i < 64 && needsProbe(); ++i)
+  {
+    if (av_read_frame(m_pFormatContext, pkt) < 0)
+      break;
+
+    readAny = true;
+    AVCodecParameters* par = m_pFormatContext->streams[pkt->stream_index]->codecpar;
+    if (par->codec_id == AV_CODEC_ID_TRUEHD && !checked[pkt->stream_index])
+    {
+      const int result = CheckTrueHdAtmosPacket(pkt->data, pkt->size);
+      if (result >= 0)
+      {
+        checked[pkt->stream_index] = true;
+        if (result == 1)
+        {
+          par->profile = FF_PROFILE_TRUEHD_ATMOS;
+          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::ProbeTrueHdAtmos - detected Atmos in stream {}",
+                    pkt->stream_index);
+        }
+      }
+    }
+    av_packet_unref(pkt);
+  }
+
+  av_packet_free(&pkt);
+
+  if (readAny)
+  {
+    if (av_seek_frame(m_pFormatContext, -1, 0, AVSEEK_FLAG_BACKWARD) < 0)
+      CLog::Log(LOGWARNING, "CDVDDemuxFFmpeg::ProbeTrueHdAtmos - failed to seek back to start");
+    avformat_flush(m_pFormatContext);
+  }
 }
 
 bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool fileinfo)
@@ -574,6 +663,11 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
     // print some extra information
     av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(strFile).c_str(), 0);
+
+    // FFmpeg's probe can miss the TrueHD major sync carrying the Atmos flag.
+    // Only do the extra read when opening for file info, not at playback start.
+    if (m_bMatroska && fileinfo)
+      ProbeTrueHdAtmos();
 
     if (m_checkTransportStream)
     {
@@ -2107,27 +2201,10 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
 {
   CDemuxStream* stream = GetStream(iStreamId);
-  std::string strName;
   if (stream)
-  {
-    /* use profile to determine the DTS type */
-    if (stream->codec == AV_CODEC_ID_DTS)
-    {
-      if (stream->profile == FF_PROFILE_DTS_HD_MA)
-        strName = "dtshd_ma";
-      else if (stream->profile == FF_PROFILE_DTS_HD_HRA)
-        strName = "dtshd_hra";
-      else
-        strName = "dca";
+    return StreamUtils::GetCodecName(stream->codec, stream->profile);
 
-      return strName;
-    }
-
-    const AVCodec* codec = avcodec_find_decoder(stream->codec);
-    if (codec)
-      strName = avcodec_get_name(codec->id);
-  }
-  return strName;
+  return {};
 }
 
 bool CDVDDemuxFFmpeg::IsProgramChange()

@@ -1,7 +1,8 @@
 include ../../Makefile.include SQLITE3-VERSION ../../download-files.include
 DEPS = ../../Makefile.include SQLITE3-VERSION Makefile ../../download-files.include \
                                 001-Disable-sqlite3bin.patch \
-                                sqlite3.c.patch
+                                sqlite3.c.patch \
+                                sqlite3-strerror.patch
 
 # configuration settings
 export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1
@@ -21,6 +22,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 # seems MAP_POPULATE is broken on aarch64
 ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../sqlite3.c.patch
+else
+	cd $(PLATFORM); patch -p1 -i ../sqlite3-strerror.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)

@@ -1,0 +1,11 @@
+--- a/sqlite3.c
++++ b/sqlite3.c
+@@ -36723,7 +36723,7 @@
+   ** huge problem. Incorrectly concluding that the GNU version is available
+   ** could lead to a segfault though.
+   */
+-#if defined(STRERROR_R_CHAR_P) || defined(__USE_GNU)
++#if defined(STRERROR_R_CHAR_P)
+   zErr =
+ # endif
+   strerror_r(iErrno, aErr, sizeof(aErr)-1);

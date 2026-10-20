@@ -23841,6 +23841,18 @@ msgctxt "#39201"
 msgid "HDR10+"
 msgstr ""
 
+#. Label of button "Rescan stream details" in Settings / Media / Library
+#: system/settings/settings.xml
+msgctxt "#39202"
+msgid "Rescan stream details"
+msgstr ""
+
+#. Help text of button "Rescan stream details" in Settings / Media / Library
+#: system/settings/settings.xml
+msgctxt "#39203"
+msgid "Re-reads video and audio stream information for every library item from the media files. Does not fetch online metadata, artwork or text."
+msgstr ""
+
 # 40000 to 40800 are reserved for Video Versions feature
 
 #. Generic video versions label (plural)

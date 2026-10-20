@@ -17,6 +17,7 @@
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
+#include "video/jobs/VideoLibraryRescanStreamDetailsJob.h"
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
@@ -122,6 +123,24 @@ bool CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
   Refresh();
 
   return true;
+}
+
+bool CVideoLibraryQueue::RescanStreamDetails()
+{
+  if (IsRunning())
+    return false;
+
+  AddJob(new CVideoLibraryRescanStreamDetailsJob());
+  return true;
+}
+
+bool CVideoLibraryQueue::RescanStreamDetailsModal()
+{
+  if (IsRunning())
+    return false;
+
+  CVideoLibraryRescanStreamDetailsJob job;
+  return job.DoModal();
 }
 
 void CVideoLibraryQueue::RefreshItem(std::shared_ptr<CFileItem> item,

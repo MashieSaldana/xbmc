@@ -3285,6 +3285,45 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
 }
 
 //********************************************************************************************************************************
+void CVideoDatabase::GetLibraryFilesForStreamRescan(std::vector<std::pair<int, std::string>>& files)
+{
+  files.clear();
+
+  try
+  {
+    if (nullptr == m_pDB || nullptr == m_pDS)
+      return;
+
+    const std::string strSQL =
+        "SELECT DISTINCT files.idFile, files.strFilename, path.strPath "
+        "FROM files JOIN path ON path.idPath = files.idPath "
+        "WHERE files.idFile IN ("
+        "SELECT idFile FROM movie "
+        "UNION SELECT idFile FROM episode "
+        "UNION SELECT idFile FROM musicvideo "
+        "UNION SELECT idFile FROM videoversion) "
+        "ORDER BY files.idFile";
+
+    if (!m_pDS->query(strSQL))
+      return;
+
+    while (!m_pDS->eof())
+    {
+      std::string filePath;
+      ConstructPath(filePath, m_pDS->fv("path.strPath").get_asString(),
+                    m_pDS->fv("files.strFilename").get_asString());
+      files.emplace_back(m_pDS->fv("files.idFile").get_asInt(), std::move(filePath));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+  }
+}
+
+//********************************************************************************************************************************
 void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType)
 {
   try

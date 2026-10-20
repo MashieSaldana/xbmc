@@ -770,6 +770,10 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_bluray)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s16le)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s24le)">PCM</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos)">Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos)">Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x)">DTS:X</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,truehd)">TrueHD</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,vorbis)">Vorbis</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wav)">WAV</value>

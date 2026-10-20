@@ -525,6 +525,15 @@ public:
   bool HasMusicVideoInfo(const std::string& strFilenameAndPath);
 
   void GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType);
+
+  /*!
+   * \brief Get every library file whose stream details can be refreshed.
+   *
+   * Returns movie, episode, music video and video version/extras files with
+   * their database ids and full paths. Used by the stream-details-only rescan.
+   */
+  void GetLibraryFilesForStreamRescan(std::vector<std::pair<int, std::string>>& files);
+
   std::string GetGenreById(int id);
   std::string GetCountryById(int id);
   std::string GetSetById(int id);
