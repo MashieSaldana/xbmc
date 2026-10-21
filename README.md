@@ -1,3 +1,14 @@
+> **Personal Kodi 21.3 fork — immersive audio + stream-details rescan.**
+>
+> This branch adds Dolby Atmos / DTS:X detection, a container-vs-immersive badge layout
+> (TRUEHD | ATMOS, DD+ | ATMOS, DTS-MA | DTS:X), a library **Rescan stream details** action and a
+> DTS:X passthrough fix. Built and tested on NVIDIA Shield TV (2017) / Android 11.
+>
+> **[Download the arm64 APK](https://github.com/MashieSaldana/xbmc/releases)** ·
+> **[Fork notes and build instructions](FORK.md)**
+>
+> Everything below is upstream Kodi's README.
+
 ![Kodi Logo](docs/resources/banner.png)
 
 <p align="center">
