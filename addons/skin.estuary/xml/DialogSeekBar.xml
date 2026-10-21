@@ -81,8 +81,20 @@
 						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
 					</include>
 					<include content="MediaFlag">
+						<param name="texture" value="flags/audiochannel/atmos.png" />
+						<param name="visible" value="String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos) | String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos)" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="flags/audiochannel/dtsx_imax.png" />
+						<param name="visible" value="String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x_imax)" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="flags/audiochannel/dtsx.png" />
+						<param name="visible" value="String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x)" />
+					</include>
+					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels) + !String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos) + !String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos) + !String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x) + !String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x_imax)" />
 					</include>
 				</control>
 				<control type="grouplist">

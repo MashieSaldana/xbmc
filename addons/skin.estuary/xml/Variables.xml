@@ -770,10 +770,10 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_bluray)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s16le)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s24le)">PCM</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos)">Atmos</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos)">Atmos</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x)">DTS:X</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos)">TrueHD</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos)">Dolby D+</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x)">DTSHD-MA</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax)">DTSHD-MA</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,truehd)">TrueHD</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,vorbis)">Vorbis</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wav)">WAV</value>
@@ -783,6 +783,10 @@
 		<value>$INFO[ListItem.AudioCodec]</value>
 	</variable>
 	<variable name="AudioChannelsVar">
+		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos)">Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos)">Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x)">DTS:X</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
 		<value condition="String.IsEqual(ListItem.AudioChannels,0)">0.0</value>
 		<value condition="String.IsEqual(ListItem.AudioChannels,1)">1.0</value>
 		<value condition="String.IsEqual(ListItem.AudioChannels,2)">2.0</value>

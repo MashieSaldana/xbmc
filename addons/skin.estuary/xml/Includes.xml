@@ -416,8 +416,20 @@
 					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioCodec)" />
 				</include>
 				<include content="MediaFlag">
+					<param name="texture" value="flags/audiochannel/atmos.png" />
+					<param name="visible" value="String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,truehd_atmos) | String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,eac3_ddp_atmos)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="flags/audiochannel/dtsx_imax.png" />
+					<param name="visible" value="String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,dtshd_ma_x_imax)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="flags/audiochannel/dtsx.png" />
+					<param name="visible" value="String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,dtshd_ma_x)" />
+				</include>
+				<include content="MediaFlag">
 					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioChannels,flags/audiochannel/,.png]" />
-					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels)" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels) + !String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,truehd_atmos) + !String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,eac3_ddp_atmos) + !String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,dtshd_ma_x) + !String.IsEqual($PARAM[infolabel_prefix]ListItem.AudioCodec,dtshd_ma_x_imax)" />
 				</include>
 			</control>
 			<control type="grouplist">
